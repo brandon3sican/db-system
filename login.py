@@ -9,45 +9,43 @@ class LoginWindow:
         
         self.window = tk.Tk()
         self.window.title("Database System - Login")
-        self.window.geometry("400x300")
+        self.window.geometry("350x250")
         self.window.resizable(False, False)
         
         # Center the window
         self.window.update_idletasks()
-        x = (self.window.winfo_screenwidth() // 2) - (400 // 2)
-        y = (self.window.winfo_screenheight() // 2) - (300 // 2)
-        self.window.geometry(f"400x300+{x}+{y}")
+        x = (self.window.winfo_screenwidth() // 2) - (350 // 2)
+        y = (self.window.winfo_screenheight() // 2) - (250 // 2)
+        self.window.geometry(f"350x250+{x}+{y}")
         
         self.create_widgets()
         
     def create_widgets(self):
-        # Main frame
+        # Main frame - compact
         main_frame = ttk.Frame(self.window, padding="20")
-        main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        main_frame.pack(fill=tk.BOTH, expand=True)
         
         # Title
         title_label = ttk.Label(main_frame, text="Database System Login", font=('Arial', 16, 'bold'))
-        title_label.grid(row=0, column=0, columnspan=2, pady=(0, 20))
+        title_label.pack(pady=(0, 15))
         
         # Username
-        ttk.Label(main_frame, text="Username:").grid(row=1, column=0, sticky=tk.W, pady=5)
-        self.username_entry = ttk.Entry(main_frame, width=20)
-        self.username_entry.grid(row=1, column=1, pady=5, padx=(10, 0))
+        username_label = ttk.Label(main_frame, text="Username:")
+        username_label.pack(anchor=tk.W, pady=3)
+        
+        self.username_entry = ttk.Entry(main_frame, width=25)
+        self.username_entry.pack(fill=tk.X, pady=3)
         
         # Password
-        ttk.Label(main_frame, text="Password:").grid(row=2, column=0, sticky=tk.W, pady=5)
-        self.password_entry = ttk.Entry(main_frame, width=20, show="*")
-        self.password_entry.grid(row=2, column=1, pady=5, padx=(10, 0))
+        password_label = ttk.Label(main_frame, text="Password:")
+        password_label.pack(anchor=tk.W, pady=3)
+        
+        self.password_entry = ttk.Entry(main_frame, width=25, show="*")
+        self.password_entry.pack(fill=tk.X, pady=3)
         
         # Login button
         login_button = ttk.Button(main_frame, text="Login", command=self.login)
-        login_button.grid(row=3, column=0, columnspan=2, pady=20)
-        
-        # Default credentials info
-        info_frame = ttk.LabelFrame(main_frame, text="Default Credentials", padding="10")
-        info_frame.grid(row=4, column=0, columnspan=2, pady=(10, 0), sticky=(tk.W, tk.E))
-        
-        ttk.Label(info_frame, text="Admin: username: admin, password: admin123", font=('Arial', 9)).pack()
+        login_button.pack(pady=10)
         
         # Bind Enter key to login
         self.window.bind('<Return>', lambda event: self.login())

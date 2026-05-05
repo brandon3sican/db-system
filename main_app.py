@@ -15,13 +15,11 @@ class MainApplication:
         
         self.window = tk.Tk()
         self.window.title("Database System - Main Application")
-        self.window.geometry("1200x800")
         
-        # Center the window
-        self.window.update_idletasks()
-        x = (self.window.winfo_screenwidth() // 2) - (1200 // 2)
-        y = (self.window.winfo_screenheight() // 2) - (800 // 2)
-        self.window.geometry(f"1200x800+{x}+{y}")
+        # Set to full screen
+        self.window.state('zoomed')  # Windows full screen
+        # Alternative for cross-platform:
+        # self.window.attributes('-fullscreen', True)
         
         self.create_widgets()
         self.refresh_data()
@@ -122,10 +120,6 @@ class MainApplication:
         # Upload DB button
         upload_db_button = ttk.Button(toolbar_frame, text="Upload DB", command=self.upload_database)
         upload_db_button.pack(side=tk.LEFT, padx=(0, 5))
-        
-        # Network Sync button
-        sync_button = ttk.Button(toolbar_frame, text="Sync", command=self.network_sync)
-        sync_button.pack(side=tk.LEFT, padx=(0, 5))
         
         # Refresh button
         refresh_button = ttk.Button(toolbar_frame, text="Refresh", command=self.refresh_data)
@@ -548,122 +542,6 @@ class MainApplication:
                 
         except Exception as e:
             messagebox.showerror("Upload Failed", f"Failed to upload database:\n{str(e)}")
-    
-    def network_sync(self):
-        """Network sync options for data transfer between computers"""
-        try:
-            from tkinter import filedialog, simpledialog
-            import os
-            
-            # Create sync options dialog
-            sync_window = tk.Toplevel(self.window)
-            sync_window.title("Network Sync Options")
-            sync_window.geometry("500x400")
-            sync_window.transient(self.window)
-            sync_window.grab_set()
-            
-            # Center the dialog
-            sync_window.update_idletasks()
-            x = (sync_window.winfo_screenwidth() // 2) - (250)
-            y = (sync_window.winfo_screenheight() // 2) - (200)
-            sync_window.geometry(f"500x400+{x}+{y}")
-            
-            main_frame = ttk.Frame(sync_window, padding="20")
-            main_frame.pack(fill=tk.BOTH, expand=True)
-            
-            # Title
-            title_label = ttk.Label(main_frame, text="Data Transfer Options", font=('Arial', 14, 'bold'))
-            title_label.pack(pady=(0, 20))
-            
-            # Option 1: Export to Network Location
-            export_frame = ttk.LabelFrame(main_frame, text="Export to Network/Shared Folder", padding="15")
-            export_frame.pack(fill=tk.X, pady=(0, 15))
-            
-            export_text = """
-1. Click 'Export Database' to save current data
-2. Choose a network/shared folder location
-3. Other computers can import from this location
-4. Perfect for office networks or shared drives
-            """
-            ttk.Label(export_frame, text=export_text, justify=tk.LEFT).pack(anchor=tk.W)
-            
-            ttk.Button(export_frame, text="Export Database", command=lambda: self.export_to_network(sync_window)).pack(pady=(10, 0))
-            
-            # Option 2: Import from Network Location
-            import_frame = ttk.LabelFrame(main_frame, text="Import from Network/Shared Folder", padding="15")
-            import_frame.pack(fill=tk.X, pady=(0, 15))
-            
-            import_text = """
-1. Click 'Import Database' to load data from network
-2. Select database file from shared location
-3. Current data will be backed up automatically
-4. Updates your local database with network data
-            """
-            ttk.Label(import_frame, text=import_text, justify=tk.LEFT).pack(anchor=tk.W)
-            
-            ttk.Button(import_frame, text="Import Database", command=lambda: self.import_from_network(sync_window)).pack(pady=(10, 0))
-            
-            # Option 3: Excel Transfer
-            excel_frame = ttk.LabelFrame(main_frame, text="Excel File Transfer", padding="15")
-            excel_frame.pack(fill=tk.X, pady=(0, 15))
-            
-            excel_text = """
-1. Use Excel Export to create data file
-2. Transfer Excel file via email, USB, or cloud
-3. Other computer uses Excel Import
-4. Works between any computers, no network needed
-            """
-            ttk.Label(excel_frame, text=excel_text, justify=tk.LEFT).pack(anchor=tk.W)
-            
-            excel_button_frame = ttk.Frame(excel_frame)
-            excel_button_frame.pack(pady=(10, 0))
-            
-            ttk.Button(excel_button_frame, text="Excel Export", command=lambda: self.excel_export_sync(sync_window)).pack(side=tk.LEFT, padx=(0, 5))
-            ttk.Button(excel_button_frame, text="Excel Import", command=lambda: self.excel_import_sync(sync_window)).pack(side=tk.LEFT)
-            
-            # Close button
-            ttk.Button(main_frame, text="Close", command=sync_window.destroy).pack(pady=(10, 0))
-            
-        except Exception as e:
-            messagebox.showerror("Sync Error", f"Failed to open sync options:\n{str(e)}")
-    
-    def export_to_network(self, parent_window):
-        """Export database to network/shared folder"""
-        try:
-            from tkinter import filedialog
-            import shutil
-            from datetime import datetime
-            
-            # Ask for network location
-            file_path = filedialog.asksaveasfilename(
-                title="Save Database to Network Location",
-                defaultextension=".db",
-                filetypes=[("Database Files", "*.db"), ("All Files", "*.*")],
-                initialname=f"database_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.db"
-            )
-            
-            if file_path:
-                shutil.copy2("database_system.db", file_path)
-                messagebox.showinfo("Export Successful", f"Database exported to:\n{file_path}")
-                parent_window.destroy()
-                
-        except Exception as e:
-            messagebox.showerror("Export Failed", f"Failed to export database:\n{str(e)}")
-    
-    def import_from_network(self, parent_window):
-        """Import database from network/shared folder"""
-        self.upload_database()
-        parent_window.destroy()
-    
-    def excel_export_sync(self, parent_window):
-        """Excel export for data transfer"""
-        self.open_excel_manager()
-        parent_window.destroy()
-    
-    def excel_import_sync(self, parent_window):
-        """Excel import for data transfer"""
-        self.open_excel_manager()
-        parent_window.destroy()
     
     def logout(self):
         if messagebox.askyesno("Logout", "Are you sure you want to logout?"):

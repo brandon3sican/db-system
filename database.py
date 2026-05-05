@@ -103,6 +103,23 @@ class DatabaseManager:
                 return {'id': user_id, 'username': username, 'role': role}
         return None
     
+    def get_user_by_username(self, username):
+        """Get user by username without password verification"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute(
+            "SELECT id, username, role, is_active FROM users WHERE username = ?",
+            (username,)
+        )
+        result = cursor.fetchone()
+        conn.close()
+        
+        if result and result[3]:  # Check if user is active
+            user_id, username, role, is_active = result
+            return {'id': user_id, 'username': username, 'role': role}
+        return None
+    
     def get_table_config(self):
         """Get table field configuration"""
         conn = self.get_connection()
